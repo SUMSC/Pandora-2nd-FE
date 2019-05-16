@@ -9,3 +9,13 @@
 ## 模板
 
 这里使用了 [vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/) 的基础模板。
+
+## 使用方式
+
+安装依赖 -> 测试运行 -> Build
+
+```shell
+yarn
+yarn dev
+yarn build:prod
+```
