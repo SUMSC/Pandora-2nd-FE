@@ -10,7 +10,7 @@ const state = {
   token: getToken(),
   name: '',
   id_tag: '',
-  avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+  avatar: 'https://oss.liontao.xin/pandora_avatar.png'
 }
 
 const mutations = {
@@ -33,14 +33,14 @@ const actions = {
       id: username.trim(),
       token: crypto.createHash('md5').update(password).digest('hex')
     }).then(async response => {
-      const { message } = response.data
-      if (!response.data.ok)
+      const { data } = response.data
+      if (!response.data.status)
         return { error: '登录失败，请检查你的用户名或密码' }
       else {
-        setToken(message)
-        commit('SET_TOKEN', message)
-        dispatch('getInfo', message)
-        return await insertUser(message)
+        setToken(data)
+        commit('SET_TOKEN', data)
+        dispatch('getInfo', data)
+        return await insertUser(data)
       }
     }).catch(err => {
       console.warn(err)

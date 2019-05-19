@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken'
 
 const TokenKey = 'oss_token' // eForm-Auth Token
 
+export const AUTH_URL = 'https://sso.liontao.xin/v2'
+
 export function getToken() {
   return Cookies.get(TokenKey)
 }

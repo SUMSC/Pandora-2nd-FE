@@ -60,7 +60,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'https://sumsc.github.io/pandora/2/',
+        path: 'https://sumsc.gitee.io/pandora/2/',
         meta: { title: '挑战说明', icon: 'link' }
       }
     ]

@@ -1,9 +1,9 @@
 <template lang="pug">
   div(class="dashboard-container")
     div(class="app-container")
-      el-form(ref="form" :model="form" label-width="120px" :inline="true")
-        el-form-item(label="Git Link")
-          el-input(v-model="form.repo" placeholder="请填写你的 Git Link")
+      el-form(ref="form" :model="form" :rules="rules" label-width="120px" :inline="true")
+        el-form-item(label="Git Link" prop="repo")
+          el-input(v-model="form.repo" placeholder="请填写你的 Git Link" clearable)
         el-form-item
           el-button(type="primary" @click="onSubmit") 提交
       el-table(
@@ -48,13 +48,25 @@ import { Message } from 'element-ui'
 export default {
   name: 'Dashboard',
   data() {
+    var validateRepo = (rule, value, callback) => {
+      if (!/^https:\/\/.*?\.git$/.test(value)) {
+        callback(new Error('请输入正确的 HTTPS Git Repo 地址'))
+      } else {
+        callback()
+      }
+    }
     return {
       form: {
         repo: ''
       },
       list: [],
       listLoading: true,
-      dialogVisible: false
+      dialogVisible: false,
+      rules: {
+        repo: [
+          { validator: validateRepo, trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -66,18 +78,27 @@ export default {
     this.fetchData()
   },
   methods: {
-    async onSubmit() {
-      try {
-        const res = await updateRepo({
-          repo: this.form.repo,
-          id_tag: this.id_tag
-        })
-        if (res['error']) Message.error(res['error'])
-        else Message.success('提交成功')
-      } catch (err) {
-        console.warn('Put Repo Error:', err)
-      }
-      
+    onSubmit() {
+      this.$refs['form'].validate(async valid => {
+        if (valid) {
+          try {
+            const res = await updateRepo({
+              repo: this.form.repo,
+              id_tag: this.id_tag
+            })
+            if (res['error']) {
+              Message.error(res['error'])
+            } else {
+              Message.success('提交成功')
+              this.form.repo = ''
+            }
+          } catch (err) {
+            console.warn('Put Repo Error:', err)
+          }
+        } else {
+          return false
+        }
+      })
     },
     async fetchData() {
       this.listLoading = true
@@ -100,14 +121,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .dashboard {
-    &-container {
-      margin: 30px;
-    }
-
-    &-text {
-      font-size: 30px;
-      line-height: 46px;
-    }
+.dashboard {
+  &-container {
+    margin: 30px;
   }
+
+  &-text {
+    font-size: 30px;
+    line-height: 46px;
+  }
+}
 </style>

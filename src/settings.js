@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: '魔盒挑战 2nd - SUMSC',
 
   /**
    * @type {boolean} true | false

@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 import axios from 'axios'
-import { parsePayload } from '../utils/auth'
+import { parsePayload, AUTH_URL } from '../utils/auth'
 
 export function login(data) {
-  return axios.post('http://192.168.2.169:5000/login', data)
+  return axios.post(`${AUTH_URL}/login`, data)
 }
 
 // export function logout() {

@@ -2,19 +2,22 @@
   div(class="login-container")
     el-form(ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left")
       div(class="title-container")
-        h3(class="title") 苏州大学统一身份认证
-          el-tooltip(effect="light" content="点击这里查看参赛须知" placement="right" :value="true")
-            a(href="https://sumsc.xin/pandora/2" target="_blank"): i(class="el-icon-share")
-      el-form-item(prop="username")
+        h2(class="title") 魔盒挑战第二期
+        p(class="comment") 请使用苏州大学统一身份认证登录
+      el-form-item(class="form-item" prop="username")
         span(class="svg-container")
           svg-icon(icon-class="user")
         el-input(ref="username" v-model="loginForm.username" placeholder="学号" name="username" type="text" tabindex="1" auto-complete="on")
-      el-form-item(prop="password")
+      el-form-item(class="form-item" prop="password")
         span(class="svg-container")
           svg-icon(icon-class="password")
         el-input(:key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" placeholder="密码" name="password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin")
         span(class="show-pwd" @click="showPwd")
           svg-icon(:icon-class="passwordType === 'password' ? 'eye' : 'eye-open'")
+      el-form-item(prop="license")
+        span(class="license-label") 请先阅读并同意
+          a(href="https://sumsc.gitee.io/pandora/2/license.html" target="_blank" class="license-link") 《魔盒挑战参赛协议》
+        el-switch(v-model="loginForm.license")
       el-button(:loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin") 登录
 </template>
 
@@ -35,14 +38,22 @@ export default {
     const validatePassword = (rule, value, callback) => {
       callback()
     }
+    const validateLicense = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请先阅读并同意参赛协议'))
+      }
+      callback()
+    }
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        license: false
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        license: [{ validator: validateLicense, trigger: 'blur' }]
       },
       loading: false,
       passwordType: 'password',
@@ -83,7 +94,6 @@ export default {
             this.loading = false
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -127,7 +137,7 @@ $cursor: #fff;
     }
   }
 
-  .el-form-item {
+  .form-item{
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
@@ -185,9 +195,16 @@ $light_gray:#eee;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
+      margin: 0px auto 30px auto;
       text-align: center;
       font-weight: bold;
+    }
+
+    .comment {
+      font-size: 18px;
+      color: $light_gray;
+      margin: 0px auto 40px auto;
+      text-align: center;
     }
   }
 
@@ -199,6 +216,14 @@ $light_gray:#eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+}
+
+.license-label {
+  color: #C0C4CC;
+
+  .license-link {
+    color: #79bbff
   }
 }
 </style>
