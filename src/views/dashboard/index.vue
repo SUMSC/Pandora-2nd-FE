@@ -20,6 +20,8 @@
         el-table-column(class-name="status-col" label="状态" width="110" align="center")
           template(slot-scope="scope")
             el-tag(:type="scope.row.test_status==='passed'?'success':'danger'") {{ scope.row.test_status }}
+        el-table-column(class-name="status-col" label="成绩" width="110" align="center")
+          template(slot-scope="scope") {{ scope.row.test_grade }}
         el-table-column(align="center" prop="created_at" label="判题结束时间" width="400")
           template(slot-scope="scope")
             i(class="el-icon-time")
@@ -32,11 +34,12 @@
                 title="提示"
                 :visible.sync="dialogVisible"
                 width="30%"
-                :before-close="handleClose"
+                :before-close="() => {dialogVisible = false}"
               )
-                span {{ scope.row.error_log}}
+                el-table(:data="parse_error_log(scope.row.error_log)" style="width: 100%" border)
+                  el-table-column(prop="func" label="函数名" width="180")
+                  el-table-column(prop="reason" label="日志")
                 span(slot="footer" class="dialog-footer")
-                  el-button(@click="dialogVisible = false") 取 消
                   el-button(type="primary" @click="dialogVisible = false") 确 定
 </template>
 
@@ -115,7 +118,18 @@ export default {
     showDialog() {
       this.dialogVisible = true
     },
-    handleClose() {}
+    parse_error_log(error_log) {
+      console.log(error_log)
+      const logs = error_log.split(/\n/)
+      logs.pop()
+      return logs.map(item => {
+        const col = item.split(/\s/)
+        return {
+          func: col.shift(),
+          reason: col
+        }
+      })
+    }
   }
 }
 </script>
